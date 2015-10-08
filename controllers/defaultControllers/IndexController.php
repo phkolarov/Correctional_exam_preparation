@@ -14,11 +14,12 @@ class IndexController
 
     public function index(){
 
-
-
         var_dump('index-a');
     }
 
+    /**
+     * @Route("dontlogin/nelogin")
+     */
     public function login(){
 
 

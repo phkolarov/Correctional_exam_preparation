@@ -15,6 +15,7 @@ use controllers\AnnotationController;
 
 include('DefaultRouterController.php');
 include('AreaController.php');
+include('CustomRouteController.php');
 include('AnnotationController.php');
 
 class MasterController
@@ -23,49 +24,38 @@ class MasterController
 
 
 
-    public static function controllerChecker($controller,$action,$parameters)
+    public static function controllerChecker($ctrl,$action,$parameters)
     {
 
-        if(!isset($_SESSION['username'])){
-            $controller = "index";
-            $action = "login";
-        }
+//        if(!isset($_SESSION['username'])){
+//            $controller = "index";
+//            $action = "login";
+//        }
 
-        $areaChecker = false;
+        //CHECK FOR CUSTOM ROUTES AND RETURN EXISTED
+        $controller = CustomRouteController::routeChecker($ctrl);
+
+        //CHECK FOR ANNOTATIONS
+        $controller = AnnotationController::checkAnnotations($controller);
+
 
         $controllerName = "controllers\\defaultControllers\\".ucfirst($controller)."Controller";
 
-        var_dump($controllerName);
         if(!file_exists($controllerName.'.php')){
             $controllerName="controllers\\defaultControllers\\IndexController";
         };
 
+        //CHECK FOR AREAS
+        $areaChecker = AreaController::areaChecker($controller);
 
+        if($areaChecker){
+            $controllerName =  "areas\\areaControllers\\".ucfirst($controller)."Controller";
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $reflection = new \ReflectionClass('controllers\AreaController');
-        $methods = $reflection->getMethods();
 
 
         spl_autoload_register(function($class){
             $controllerPath = $class.".php";
-
             if(file_exists($controllerPath)){
                 require_once($controllerPath);
             };

@@ -12,4 +12,20 @@ namespace controllers;
 class AreaController
 {
 
+    public static function areaChecker($controllerName){
+
+
+        $classPath = "areas\\areaControllers\\".ucfirst($controllerName)."Controller.php";
+
+
+        if(file_exists($classPath)){
+
+           return true;
+        }else{
+
+            return false;
+        }
+
+    }
+
 }
